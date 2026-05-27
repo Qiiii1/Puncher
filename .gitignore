@@ -1,0 +1,13 @@
+# Xcode user state and build products
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+
+# macOS
+.DS_Store
+
+# Local feature worktrees
+.worktrees/

@@ -1,0 +1,695 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4EECC19B2FC73F0D0001E733 /* Puncher Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 4EECC19A2FC73F0D0001E733 /* Puncher Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4EECC19C2FC73F0D0001E733 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4EECC18E2FC73F0D0001E733 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4EECC1992FC73F0D0001E733;
+			remoteInfo = "Puncher Watch App";
+		};
+		4EECC1AA2FC73F0E0001E733 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4EECC18E2FC73F0D0001E733 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4EECC1992FC73F0D0001E733;
+			remoteInfo = "Puncher Watch App";
+		};
+		4EECC1B42FC73F0F0001E733 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4EECC18E2FC73F0D0001E733 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4EECC1992FC73F0D0001E733;
+			remoteInfo = "Puncher Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4EECC1C02FC73F0F0001E733 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				4EECC19B2FC73F0D0001E733 /* Puncher Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		4EECC1942FC73F0D0001E733 /* Puncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Puncher.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4EECC19A2FC73F0D0001E733 /* Puncher Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Puncher Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4EECC1A92FC73F0E0001E733 /* Puncher Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Puncher Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4EECC1B32FC73F0F0001E733 /* Puncher Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Puncher Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		4EECC19E2FC73F0D0001E733 /* Puncher Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Puncher Watch App";
+			sourceTree = "<group>";
+		};
+		4EECC1AC2FC73F0E0001E733 /* Puncher Watch AppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Puncher Watch AppTests";
+			sourceTree = "<group>";
+		};
+		4EECC1B62FC73F0F0001E733 /* Puncher Watch AppUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Puncher Watch AppUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4EECC1972FC73F0D0001E733 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4EECC1A62FC73F0E0001E733 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4EECC1B02FC73F0F0001E733 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4EECC18D2FC73F0D0001E733 = {
+			isa = PBXGroup;
+			children = (
+				4EECC19E2FC73F0D0001E733 /* Puncher Watch App */,
+				4EECC1AC2FC73F0E0001E733 /* Puncher Watch AppTests */,
+				4EECC1B62FC73F0F0001E733 /* Puncher Watch AppUITests */,
+				4EECC1952FC73F0D0001E733 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4EECC1952FC73F0D0001E733 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4EECC1942FC73F0D0001E733 /* Puncher.app */,
+				4EECC19A2FC73F0D0001E733 /* Puncher Watch App.app */,
+				4EECC1A92FC73F0E0001E733 /* Puncher Watch AppTests.xctest */,
+				4EECC1B32FC73F0F0001E733 /* Puncher Watch AppUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4EECC1932FC73F0D0001E733 /* Puncher */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4EECC1C12FC73F0F0001E733 /* Build configuration list for PBXNativeTarget "Puncher" */;
+			buildPhases = (
+				4EECC1922FC73F0D0001E733 /* Resources */,
+				4EECC1C02FC73F0F0001E733 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4EECC19D2FC73F0D0001E733 /* PBXTargetDependency */,
+			);
+			name = Puncher;
+			packageProductDependencies = (
+			);
+			productName = Puncher;
+			productReference = 4EECC1942FC73F0D0001E733 /* Puncher.app */;
+			productType = "com.apple.product-type.application.watchapp2-container";
+		};
+		4EECC1992FC73F0D0001E733 /* Puncher Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4EECC1BD2FC73F0F0001E733 /* Build configuration list for PBXNativeTarget "Puncher Watch App" */;
+			buildPhases = (
+				4EECC1962FC73F0D0001E733 /* Sources */,
+				4EECC1972FC73F0D0001E733 /* Frameworks */,
+				4EECC1982FC73F0D0001E733 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				4EECC19E2FC73F0D0001E733 /* Puncher Watch App */,
+			);
+			name = "Puncher Watch App";
+			packageProductDependencies = (
+			);
+			productName = "Puncher Watch App";
+			productReference = 4EECC19A2FC73F0D0001E733 /* Puncher Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4EECC1A82FC73F0E0001E733 /* Puncher Watch AppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4EECC1C42FC73F0F0001E733 /* Build configuration list for PBXNativeTarget "Puncher Watch AppTests" */;
+			buildPhases = (
+				4EECC1A52FC73F0E0001E733 /* Sources */,
+				4EECC1A62FC73F0E0001E733 /* Frameworks */,
+				4EECC1A72FC73F0E0001E733 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4EECC1AB2FC73F0E0001E733 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				4EECC1AC2FC73F0E0001E733 /* Puncher Watch AppTests */,
+			);
+			name = "Puncher Watch AppTests";
+			packageProductDependencies = (
+			);
+			productName = "Puncher Watch AppTests";
+			productReference = 4EECC1A92FC73F0E0001E733 /* Puncher Watch AppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		4EECC1B22FC73F0F0001E733 /* Puncher Watch AppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4EECC1C72FC73F0F0001E733 /* Build configuration list for PBXNativeTarget "Puncher Watch AppUITests" */;
+			buildPhases = (
+				4EECC1AF2FC73F0F0001E733 /* Sources */,
+				4EECC1B02FC73F0F0001E733 /* Frameworks */,
+				4EECC1B12FC73F0F0001E733 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4EECC1B52FC73F0F0001E733 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				4EECC1B62FC73F0F0001E733 /* Puncher Watch AppUITests */,
+			);
+			name = "Puncher Watch AppUITests";
+			packageProductDependencies = (
+			);
+			productName = "Puncher Watch AppUITests";
+			productReference = 4EECC1B32FC73F0F0001E733 /* Puncher Watch AppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4EECC18E2FC73F0D0001E733 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2620;
+				LastUpgradeCheck = 2620;
+				TargetAttributes = {
+					4EECC1932FC73F0D0001E733 = {
+						CreatedOnToolsVersion = 26.2;
+					};
+					4EECC1992FC73F0D0001E733 = {
+						CreatedOnToolsVersion = 26.2;
+					};
+					4EECC1A82FC73F0E0001E733 = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 4EECC1992FC73F0D0001E733;
+					};
+					4EECC1B22FC73F0F0001E733 = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 4EECC1992FC73F0D0001E733;
+					};
+				};
+			};
+			buildConfigurationList = 4EECC1912FC73F0D0001E733 /* Build configuration list for PBXProject "Puncher" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4EECC18D2FC73F0D0001E733;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 4EECC1952FC73F0D0001E733 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4EECC1932FC73F0D0001E733 /* Puncher */,
+				4EECC1992FC73F0D0001E733 /* Puncher Watch App */,
+				4EECC1A82FC73F0E0001E733 /* Puncher Watch AppTests */,
+				4EECC1B22FC73F0F0001E733 /* Puncher Watch AppUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4EECC1922FC73F0D0001E733 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4EECC1982FC73F0D0001E733 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4EECC1A72FC73F0E0001E733 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4EECC1B12FC73F0F0001E733 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4EECC1962FC73F0D0001E733 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4EECC1A52FC73F0E0001E733 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4EECC1AF2FC73F0F0001E733 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4EECC19D2FC73F0D0001E733 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4EECC1992FC73F0D0001E733 /* Puncher Watch App */;
+			targetProxy = 4EECC19C2FC73F0D0001E733 /* PBXContainerItemProxy */;
+		};
+		4EECC1AB2FC73F0E0001E733 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4EECC1992FC73F0D0001E733 /* Puncher Watch App */;
+			targetProxy = 4EECC1AA2FC73F0E0001E733 /* PBXContainerItemProxy */;
+		};
+		4EECC1B52FC73F0F0001E733 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4EECC1992FC73F0D0001E733 /* Puncher Watch App */;
+			targetProxy = 4EECC1B42FC73F0F0001E733 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		4EECC1BB2FC73F0F0001E733 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 6KJUFW2PKN;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4EECC1BC2FC73F0F0001E733 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 6KJUFW2PKN;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		4EECC1BE2FC73F0F0001E733 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6KJUFW2PKN;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Puncher;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Qiiii.Puncher.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Debug;
+		};
+		4EECC1BF2FC73F0F0001E733 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6KJUFW2PKN;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Puncher;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Qiiii.Puncher.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Release;
+		};
+		4EECC1C22FC73F0F0001E733 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6KJUFW2PKN;
+				INFOPLIST_KEY_CFBundleDisplayName = Puncher;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Qiiii.Puncher;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		4EECC1C32FC73F0F0001E733 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6KJUFW2PKN;
+				INFOPLIST_KEY_CFBundleDisplayName = Puncher;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Qiiii.Puncher;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4EECC1C52FC73F0F0001E733 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6KJUFW2PKN;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Qiiii.Puncher-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Puncher Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Puncher Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Debug;
+		};
+		4EECC1C62FC73F0F0001E733 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6KJUFW2PKN;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Qiiii.Puncher-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Puncher Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Puncher Watch App";
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Release;
+		};
+		4EECC1C82FC73F0F0001E733 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6KJUFW2PKN;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Qiiii.Puncher-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "Puncher Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Debug;
+		};
+		4EECC1C92FC73F0F0001E733 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6KJUFW2PKN;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Qiiii.Puncher-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "Puncher Watch App";
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4EECC1912FC73F0D0001E733 /* Build configuration list for PBXProject "Puncher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4EECC1BB2FC73F0F0001E733 /* Debug */,
+				4EECC1BC2FC73F0F0001E733 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4EECC1BD2FC73F0F0001E733 /* Build configuration list for PBXNativeTarget "Puncher Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4EECC1BE2FC73F0F0001E733 /* Debug */,
+				4EECC1BF2FC73F0F0001E733 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4EECC1C12FC73F0F0001E733 /* Build configuration list for PBXNativeTarget "Puncher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4EECC1C22FC73F0F0001E733 /* Debug */,
+				4EECC1C32FC73F0F0001E733 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4EECC1C42FC73F0F0001E733 /* Build configuration list for PBXNativeTarget "Puncher Watch AppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4EECC1C52FC73F0F0001E733 /* Debug */,
+				4EECC1C62FC73F0F0001E733 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4EECC1C72FC73F0F0001E733 /* Build configuration list for PBXNativeTarget "Puncher Watch AppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4EECC1C82FC73F0F0001E733 /* Debug */,
+				4EECC1C92FC73F0F0001E733 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4EECC18E2FC73F0D0001E733 /* Project object */;
+}
