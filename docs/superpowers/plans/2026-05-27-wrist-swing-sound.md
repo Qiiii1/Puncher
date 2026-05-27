@@ -233,6 +233,6 @@ Run: `xcodebuild -project 'Puncher.xcodeproj' -target 'Puncher Watch AppTests' -
 
 Expected: `BUILD SUCCEEDED` for both targets. Executing the test bundle remains a physical-watch or installed-runtime validation.
 
-- [ ] **Step 4: Publish**
+- [x] **Step 4: Publish**
 
 Commit implementation, create public repository `Qiiii1/Puncher`, merge the verified feature branch to `main`, and push `main` to GitHub.
