@@ -8,14 +8,90 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var monitor = MotionMonitor()
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        ScrollView {
+            VStack(spacing: 12) {
+                Label(monitor.state.title, systemImage: monitor.state.symbolName)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(statusColor)
+
+                ProgressView(value: monitor.latestIntensity, total: 1.0) {
+                    Text("动作强度")
+                        .font(.caption)
+                } currentValueLabel: {
+                    Text(monitor.latestIntensity, format: .percent.precision(.fractionLength(0)))
+                        .monospacedDigit()
+                }
+                .tint(.orange)
+
+                HStack {
+                    Text("触发次数")
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Text("\(monitor.triggerCount)")
+                        .fontWeight(.semibold)
+                        .monospacedDigit()
+                }
+                .font(.caption)
+
+                VStack(spacing: 4) {
+                    HStack {
+                        Text("灵敏度")
+                        Spacer()
+                        Text("\(Int(monitor.sensitivity * 100))")
+                            .monospacedDigit()
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                    Slider(value: $monitor.sensitivity, in: 0.0...1.0)
+                        .tint(.orange)
+                }
+
+                Button {
+                    monitor.playTestSound()
+                } label: {
+                    Label("测试音效", systemImage: "speaker.wave.2.fill")
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.orange)
+
+                if monitor.state == .unavailable {
+                    Text("请在 Apple Watch 真机上测试挥动动作。")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+
+                if let audioMessage = monitor.audioMessage {
+                    Text(audioMessage)
+                        .font(.caption2)
+                        .foregroundStyle(.red)
+                        .multilineTextAlignment(.center)
+                }
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 6)
         }
-        .padding()
+        .onAppear {
+            monitor.start()
+        }
+        .onDisappear {
+            monitor.stop()
+        }
+    }
+
+    private var statusColor: Color {
+        switch monitor.state {
+        case .idle:
+            .secondary
+        case .monitoring:
+            .green
+        case .unavailable, .failed:
+            .orange
+        }
     }
 }
 

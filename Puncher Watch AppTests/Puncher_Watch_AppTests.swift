@@ -55,10 +55,13 @@ struct MotionTriggerDetectorTests {
             rotationMagnitude: 3.0,
             timestamp: 1.36
         )
+        let acceptedFirst = detector.shouldTrigger(for: first)
+        let rejectedRepeat = detector.shouldTrigger(for: repeated)
+        let acceptedLater = detector.shouldTrigger(for: later)
 
-        #expect(detector.shouldTrigger(for: first))
-        #expect(!detector.shouldTrigger(for: repeated))
-        #expect(detector.shouldTrigger(for: later))
+        #expect(acceptedFirst)
+        #expect(!rejectedRepeat)
+        #expect(acceptedLater)
     }
 
     @Test func higherSensitivityAcceptsAWeakerSwing() {
@@ -69,8 +72,25 @@ struct MotionTriggerDetectorTests {
         )
         var lowSensitivity = MotionTriggerDetector(sensitivity: 0.0)
         var highSensitivity = MotionTriggerDetector(sensitivity: 1.0)
+        let lowTriggered = lowSensitivity.shouldTrigger(for: weakerSwing)
+        let highTriggered = highSensitivity.shouldTrigger(for: weakerSwing)
 
-        #expect(!lowSensitivity.shouldTrigger(for: weakerSwing))
-        #expect(highSensitivity.shouldTrigger(for: weakerSwing))
+        #expect(!lowTriggered)
+        #expect(highTriggered)
+    }
+
+    @Test func vectorComponentsProduceMagnitudes() {
+        let sample = MotionSample(
+            accelerationX: 3.0,
+            accelerationY: 4.0,
+            accelerationZ: 0.0,
+            rotationX: 0.0,
+            rotationY: 0.0,
+            rotationZ: 2.0,
+            timestamp: 1.0
+        )
+
+        #expect(sample.accelerationMagnitude == 5.0)
+        #expect(sample.rotationMagnitude == 2.0)
     }
 }

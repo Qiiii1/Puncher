@@ -9,6 +9,7 @@ struct MotionTriggerDetectorCheck {
         minorMovementIsIgnored()
         cooldownSuppressesRepeatTriggers()
         higherSensitivityAcceptsAWeakerSwing()
+        vectorComponentsProduceMagnitudes()
         print("MotionTriggerDetector checks passed")
     }
 
@@ -88,6 +89,21 @@ struct MotionTriggerDetectorCheck {
             highSensitivity.shouldTrigger(for: sample),
             "high sensitivity should accept a weaker swing"
         )
+    }
+
+    private static func vectorComponentsProduceMagnitudes() {
+        let sample = MotionSample(
+            accelerationX: 3.0,
+            accelerationY: 4.0,
+            accelerationZ: 0.0,
+            rotationX: 0.0,
+            rotationY: 0.0,
+            rotationZ: 2.0,
+            timestamp: 1.0
+        )
+
+        require(sample.accelerationMagnitude == 5.0, "acceleration magnitude should be calculated")
+        require(sample.rotationMagnitude == 2.0, "rotation magnitude should be calculated")
     }
 
     private static func require(_ condition: @autoclosure () -> Bool, _ message: String) {

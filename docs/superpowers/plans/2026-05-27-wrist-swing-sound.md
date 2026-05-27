@@ -8,7 +8,7 @@
 
 **Tech Stack:** SwiftUI, Core Motion, AVFAudio, Swift Testing, Xcode watchOS 26.2 project, Git/GitHub CLI
 
-**Validation constraint:** This Mac has watchOS 26.2 SDKs but no installed watchOS simulator runtime; detector behavior can be executed locally, while full watch target build/test must be retried once the watchOS platform component is installed in Xcode.
+**Validation constraint:** This Mac has watchOS 26.2 SDKs but no installed watchOS simulator runtime. The Watch App and test targets can be built against the SDK, and detector behavior can run locally; executing tests or tuning a gesture needs a watchOS runtime or physical Apple Watch.
 
 ---
 
@@ -17,12 +17,12 @@
 **Files:**
 - Modify: `.gitignore`
 
-- [ ] **Step 1: Confirm `.worktrees/` is ignored**
+- [x] **Step 1: Confirm `.worktrees/` is ignored**
 
 Run: `git check-ignore -q '.worktrees/probe'`
 Expected: exit `0`, because local feature worktrees are not project content.
 
-- [ ] **Step 2: Create the feature workspace**
+- [x] **Step 2: Create the feature workspace**
 
 Run: `git worktree add '.worktrees/wrist-swing-sound' -b 'codex/wrist-swing-sound'`
 Expected: a linked checkout based on `main`.
@@ -34,7 +34,7 @@ Expected: a linked checkout based on `main`.
 - Modify: `Puncher Watch AppTests/Puncher_Watch_AppTests.swift`
 - Create: `Tests/Logic/MotionTriggerDetectorCheck.swift`
 
-- [ ] **Step 1: Write failing behavioral checks**
+- [x] **Step 1: Write failing behavioral checks**
 
 Add tests for intentional motion, minor motion, cooldown suppression, and sensitivity:
 
@@ -46,12 +46,12 @@ var detector = MotionTriggerDetector(sensitivity: 0.5)
 
 Use the same scenarios in a standalone `@main` assertion checker so they run on macOS without a watchOS runtime.
 
-- [ ] **Step 2: Confirm the checker fails before production code exists**
+- [x] **Step 2: Confirm the checker fails before production code exists**
 
 Run: `swiftc -parse-as-library 'Tests/Logic/MotionTriggerDetectorCheck.swift' -o /private/tmp/motion-detector-check`
 Expected: FAIL because `MotionTriggerDetector` and `MotionSample` are not defined.
 
-- [ ] **Step 3: Implement the pure detector**
+- [x] **Step 3: Implement the pure detector**
 
 ```swift
 struct MotionSample {
@@ -89,7 +89,7 @@ struct MotionTriggerDetector {
 
 Thresholds scale downward as sensitivity increases, with default thresholds of `1.05 g` and `2.4 rad/s`.
 
-- [ ] **Step 4: Run portable checks**
+- [x] **Step 4: Run portable checks**
 
 Run: `swiftc -parse-as-library 'Puncher Watch App/MotionTriggerDetector.swift' 'Tests/Logic/MotionTriggerDetectorCheck.swift' -o /private/tmp/motion-detector-check && /private/tmp/motion-detector-check`
 Expected: output `MotionTriggerDetector checks passed`.
@@ -101,7 +101,7 @@ Expected: output `MotionTriggerDetector checks passed`.
 - Create (generated): `Puncher Watch App/Resources/swing.wav`
 - Create: `Puncher Watch App/SoundPlayer.swift`
 
-- [ ] **Step 1: Generate an original short sound**
+- [x] **Step 1: Generate an original short sound**
 
 Write a Swift generator that writes a mono PCM WAV containing a descending, fading noise/tone burst. Run:
 
@@ -109,7 +109,7 @@ Write a Swift generator that writes a mono PCM WAV containing a descending, fadi
 
 Expected: a local WAV resource of approximately `0.18` seconds exists.
 
-- [ ] **Step 2: Add playback service**
+- [x] **Step 2: Add playback service**
 
 ```swift
 import AVFAudio
@@ -151,7 +151,7 @@ The service exposes an error string rather than stopping motion monitoring if th
 - Modify: `Puncher Watch App/ContentView.swift`
 - Modify: `Puncher.xcodeproj/project.pbxproj`
 
-- [ ] **Step 1: Create the observable monitor**
+- [x] **Step 1: Create the observable monitor**
 
 ```swift
 import Combine
@@ -203,11 +203,11 @@ final class MotionMonitor: ObservableObject {
 
 Compute vector magnitudes from `userAcceleration` and `rotationRate`, and ask the detector for each accepted trigger.
 
-- [ ] **Step 2: Replace the template with a SwiftUI control surface**
+- [x] **Step 2: Replace the template with a SwiftUI control surface**
 
 Build a `ScrollView`/`VStack` screen with monitoring status, a `Gauge`, count, `Slider`, audio test button, and any motion/audio unavailability explanation. Call `start()` and `stop()` from view lifecycle callbacks.
 
-- [ ] **Step 3: Declare motion use**
+- [x] **Step 3: Declare motion use**
 
 Set `INFOPLIST_KEY_NSMotionUsageDescription` on the watch target configurations to explain that wrist motion is read only while the app is open.
 
@@ -216,19 +216,22 @@ Set `INFOPLIST_KEY_NSMotionUsageDescription` on the watch target configurations 
 **Files:**
 - Create: `README.md`
 
-- [ ] **Step 1: Document use and tuning**
+- [x] **Step 1: Document use and tuning**
 
 Explain that Puncher is a SwiftUI watchOS prototype; motion is based on acceleration/rotation rather than physical distance; build/run requires an Apple Watch or installed watchOS simulator platform.
 
-- [ ] **Step 2: Re-run detector checks**
+- [x] **Step 2: Re-run detector checks**
 
 Run: `swiftc -parse-as-library 'Puncher Watch App/MotionTriggerDetector.swift' 'Tests/Logic/MotionTriggerDetectorCheck.swift' -o /private/tmp/motion-detector-check && /private/tmp/motion-detector-check`
 Expected: PASS.
 
-- [ ] **Step 3: Attempt target build and capture platform status**
+- [x] **Step 3: Build application and test targets**
 
-Run: `xcodebuild -project 'Puncher.xcodeproj' -scheme 'Puncher Watch App' -configuration Debug -sdk watchsimulator -destination 'generic/platform=watchOS Simulator' -derivedDataPath /private/tmp/PuncherDerivedData CODE_SIGNING_ALLOWED=NO build`
-Expected after installing the watchOS platform: `BUILD SUCCEEDED`; currently record any missing-platform blocker accurately.
+Run: `xcodebuild -project 'Puncher.xcodeproj' -target 'Puncher Watch App' -configuration Debug -sdk watchsimulator CODE_SIGNING_ALLOWED=NO OBJROOT=/private/tmp/PuncherWatchTargetBuild/Obj SYMROOT=/private/tmp/PuncherWatchTargetBuild/Sym build`
+
+Run: `xcodebuild -project 'Puncher.xcodeproj' -target 'Puncher Watch AppTests' -configuration Debug -sdk watchsimulator CODE_SIGNING_ALLOWED=NO OBJROOT=/private/tmp/PuncherWatchTestsBuild/Obj SYMROOT=/private/tmp/PuncherWatchTestsBuild/Sym build`
+
+Expected: `BUILD SUCCEEDED` for both targets. Executing the test bundle remains a physical-watch or installed-runtime validation.
 
 - [ ] **Step 4: Publish**
 

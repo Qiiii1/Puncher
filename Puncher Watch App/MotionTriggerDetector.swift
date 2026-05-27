@@ -11,6 +11,34 @@ struct MotionSample {
     let accelerationMagnitude: Double
     let rotationMagnitude: Double
     let timestamp: TimeInterval
+
+    init(accelerationMagnitude: Double, rotationMagnitude: Double, timestamp: TimeInterval) {
+        self.accelerationMagnitude = accelerationMagnitude
+        self.rotationMagnitude = rotationMagnitude
+        self.timestamp = timestamp
+    }
+
+    init(
+        accelerationX: Double,
+        accelerationY: Double,
+        accelerationZ: Double,
+        rotationX: Double,
+        rotationY: Double,
+        rotationZ: Double,
+        timestamp: TimeInterval
+    ) {
+        accelerationMagnitude = sqrt(
+            accelerationX * accelerationX
+                + accelerationY * accelerationY
+                + accelerationZ * accelerationZ
+        )
+        rotationMagnitude = sqrt(
+            rotationX * rotationX
+                + rotationY * rotationY
+                + rotationZ * rotationZ
+        )
+        self.timestamp = timestamp
+    }
 }
 
 struct MotionTriggerDetector {
