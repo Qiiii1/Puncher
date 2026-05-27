@@ -48,7 +48,7 @@ Use the same scenarios in a standalone `@main` assertion checker so they run on 
 
 - [ ] **Step 2: Confirm the checker fails before production code exists**
 
-Run: `swiftc 'Tests/Logic/MotionTriggerDetectorCheck.swift' -o /private/tmp/motion-detector-check`
+Run: `swiftc -parse-as-library 'Tests/Logic/MotionTriggerDetectorCheck.swift' -o /private/tmp/motion-detector-check`
 Expected: FAIL because `MotionTriggerDetector` and `MotionSample` are not defined.
 
 - [ ] **Step 3: Implement the pure detector**
@@ -62,8 +62,12 @@ struct MotionSample {
 
 struct MotionTriggerDetector {
     var sensitivity: Double
-    var cooldown: TimeInterval = 0.35
+    var cooldown: TimeInterval
     private var lastTriggerTime: TimeInterval?
+    init(sensitivity: Double, cooldown: TimeInterval = 0.35) {
+        self.sensitivity = sensitivity
+        self.cooldown = cooldown
+    }
     private var thresholdScale: Double { 1.25 - min(max(sensitivity, 0), 1) * 0.5 }
     private var accelerationThreshold: Double { 1.05 * thresholdScale }
     private var rotationThreshold: Double { 2.4 * thresholdScale }
@@ -87,7 +91,7 @@ Thresholds scale downward as sensitivity increases, with default thresholds of `
 
 - [ ] **Step 4: Run portable checks**
 
-Run: `swiftc 'Puncher Watch App/MotionTriggerDetector.swift' 'Tests/Logic/MotionTriggerDetectorCheck.swift' -o /private/tmp/motion-detector-check && /private/tmp/motion-detector-check`
+Run: `swiftc -parse-as-library 'Puncher Watch App/MotionTriggerDetector.swift' 'Tests/Logic/MotionTriggerDetectorCheck.swift' -o /private/tmp/motion-detector-check && /private/tmp/motion-detector-check`
 Expected: output `MotionTriggerDetector checks passed`.
 
 ### Task 3: Generated Sound And Playback
@@ -218,7 +222,7 @@ Explain that Puncher is a SwiftUI watchOS prototype; motion is based on accelera
 
 - [ ] **Step 2: Re-run detector checks**
 
-Run: `swiftc 'Puncher Watch App/MotionTriggerDetector.swift' 'Tests/Logic/MotionTriggerDetectorCheck.swift' -o /private/tmp/motion-detector-check && /private/tmp/motion-detector-check`
+Run: `swiftc -parse-as-library 'Puncher Watch App/MotionTriggerDetector.swift' 'Tests/Logic/MotionTriggerDetectorCheck.swift' -o /private/tmp/motion-detector-check && /private/tmp/motion-detector-check`
 Expected: PASS.
 
 - [ ] **Step 3: Attempt target build and capture platform status**
