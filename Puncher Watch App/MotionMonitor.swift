@@ -131,12 +131,12 @@ final class MotionMonitor: ObservableObject {
         )
 
         latestIntensity = detector.intensity(for: sample)
-        guard detector.shouldTrigger(for: sample) else {
+        guard let effect = detector.trigger(for: sample) else {
             return
         }
 
         triggerCount += 1
-        if !soundPlayer.play() {
+        if !soundPlayer.play(effect) {
             audioMessage = soundPlayer.errorMessage ?? "音效播放失败。"
         }
     }

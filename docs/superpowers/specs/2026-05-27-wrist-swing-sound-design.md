@@ -8,7 +8,7 @@ Build a watchOS prototype that plays a short sound when the wearer makes a quick
 
 - Monitor live Apple Watch motion only while the app is in the foreground.
 - Detect a deliberate fast swing using motion intensity and rotation, not an estimated physical distance.
-- Play one short, locally generated sound for each accepted gesture.
+- Play the basic sound for normal accepted gestures and the enhanced sound on the third consecutive accepted gesture.
 - Show monitoring state, latest intensity, trigger count, and a sensitivity control for on-wrist tuning.
 - Publish the project in a public GitHub repository named `Puncher`.
 
@@ -18,15 +18,15 @@ The prototype does not monitor in the background, run a workout session, estimat
 
 `CoreMotion.CMMotionManager` exposes processed `CMDeviceMotion` data on Apple Watch, including `userAcceleration` and `rotationRate`. These values identify quick intentional motions without integrating acceleration into a drifting distance estimate.
 
-`AVFAudio.AVAudioPlayer` plays a short bundled WAV sound when a motion is accepted. The sound is generated for this project so it does not carry third-party licensing requirements.
+`AVFAudio.AVAudioPlayer` plays bundled MP3 resources when a motion is accepted. `基础音效.mp3` is used for normal accepted gestures, and `强化音效.mp3` is used for the third consecutive accepted gesture.
 
 ## Architecture
 
 ### `MotionTriggerDetector`
 
-A pure value-oriented detector owns threshold and cooldown behavior. Each sample contains acceleration magnitude, rotation magnitude, and timestamp. It returns whether one gesture should trigger audio.
+A pure value-oriented detector owns threshold, cooldown, and combo behavior. Each sample contains acceleration magnitude, rotation magnitude, and timestamp. It returns whether one gesture should trigger audio, and which audio effect should play.
 
-The starting rule accepts a motion when both adjusted thresholds are crossed and no accepted event has occurred during the previous `0.35` seconds. Sensitivity adjusts the effective thresholds. This keeps the rule testable and prevents one wrist swing from producing repeated sounds.
+The starting rule accepts a motion when both adjusted thresholds are crossed and no accepted event has occurred during the previous `0.35` seconds. Accepted gestures within `1.5` seconds count as consecutive. The first two accepted gestures in a combo play the basic sound, and the third plays the enhanced sound before the combo resets. Sensitivity adjusts the effective thresholds. This keeps the rule testable and prevents one wrist swing from producing repeated sounds.
 
 ### `MotionMonitor`
 
@@ -41,7 +41,7 @@ It begins updates when the SwiftUI view appears and stops them when the view dis
 
 ### `SoundPlayer`
 
-An audio service loads the bundled `swing.wav`, prepares `AVAudioPlayer`, and restarts the short sound on each accepted gesture. The project includes a small generator source for the original sound asset so the resource can be reproduced.
+An audio service loads bundled `基础音效.mp3` and `强化音效.mp3`, prepares an `AVAudioPlayer` for each resource, and restarts the selected sound on each accepted gesture.
 
 ### `ContentView`
 
@@ -59,7 +59,7 @@ The watch screen replaces the template placeholder with:
 2. Core Motion delivers processed movement samples.
 3. `MotionMonitor` calculates acceleration and rotation magnitudes and supplies them to `MotionTriggerDetector`.
 4. The detector either rejects the sample or emits one trigger after its cooldown check.
-5. On a trigger, `MotionMonitor` increments the count and tells `SoundPlayer` to play `swing.wav`.
+5. On a trigger, `MotionMonitor` increments the count and tells `SoundPlayer` to play the basic or enhanced sound returned by the detector.
 6. `ContentView` observes published status and measurements and redraws the tuning UI.
 7. When the view is no longer active, motion updates stop.
 

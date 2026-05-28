@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a SwiftUI watchOS prototype that detects a fast wrist swing while visible and plays a locally generated sound.
+**Goal:** Build a SwiftUI watchOS prototype that detects fast wrist swings while visible, plays a basic sound for normal triggers, and plays an enhanced sound on every third consecutive trigger.
 
-**Architecture:** Keep the trigger rule in a pure Swift `MotionTriggerDetector`, so its thresholds and cooldown can run without Apple Watch hardware. `MotionMonitor` adapts `CMDeviceMotion` samples into that detector and publishes UI state, while `SoundPlayer` owns one short generated WAV resource. `ContentView` is the SwiftUI tuning and status surface.
+**Architecture:** Keep the trigger rule in a pure Swift `MotionTriggerDetector`, so its thresholds, cooldown, and combo counter can run without Apple Watch hardware. `MotionMonitor` adapts `CMDeviceMotion` samples into that detector and publishes UI state, while `SoundPlayer` owns the bundled basic and enhanced MP3 resources. `ContentView` is the SwiftUI tuning and status surface.
 
 **Tech Stack:** SwiftUI, Core Motion, AVFAudio, Swift Testing, Xcode watchOS 26.2 project, Git/GitHub CLI
 
@@ -94,20 +94,16 @@ Thresholds scale downward as sensitivity increases, with default thresholds of `
 Run: `swiftc -parse-as-library 'Puncher Watch App/MotionTriggerDetector.swift' 'Tests/Logic/MotionTriggerDetectorCheck.swift' -o /private/tmp/motion-detector-check && /private/tmp/motion-detector-check`
 Expected: output `MotionTriggerDetector checks passed`.
 
-### Task 3: Generated Sound And Playback
+### Task 3: Audio Resources And Playback
 
 **Files:**
-- Create: `Tools/generate_swing_sound.swift`
-- Create (generated): `Puncher Watch App/Resources/swing.wav`
+- Add: `Puncher Watch App/AudioResource/基础音效.mp3`
+- Add: `Puncher Watch App/AudioResource/强化音效.mp3`
 - Create: `Puncher Watch App/SoundPlayer.swift`
 
-- [x] **Step 1: Generate an original short sound**
+- [x] **Step 1: Add bundled MP3 resources**
 
-Write a Swift generator that writes a mono PCM WAV containing a descending, fading noise/tone burst. Run:
-
-`swift 'Tools/generate_swing_sound.swift' 'Puncher Watch App/Resources/swing.wav'`
-
-Expected: a local WAV resource of approximately `0.18` seconds exists.
+Verify that both MP3 resources exist under `Puncher Watch App/AudioResource` and contain audio data.
 
 - [x] **Step 2: Add playback service**
 
@@ -117,27 +113,39 @@ import Foundation
 
 @MainActor
 final class SoundPlayer {
-    private var player: AVAudioPlayer?
+    private var players: [MotionTriggerEffect: AVAudioPlayer] = [:]
     private(set) var errorMessage: String?
 
     init(bundle: Bundle = .main) {
-        guard let url = bundle.url(forResource: "swing", withExtension: "wav") else {
-            errorMessage = "Sound resource is unavailable."
-            return
-        }
-        do {
-            player = try AVAudioPlayer(contentsOf: url)
-            player?.prepareToPlay()
-        } catch {
-            errorMessage = "Sound could not be loaded."
+        MotionTriggerEffect.allCases.forEach { effect in
+            load(effect, from: bundle)
         }
     }
 
     @discardableResult
-    func play() -> Bool {
-        guard let player else { return false }
+    func play(_ effect: MotionTriggerEffect) -> Bool {
+        guard let player = players[effect] else { return false }
         player.currentTime = 0
         return player.play()
+    }
+
+    private func load(_ effect: MotionTriggerEffect, from bundle: Bundle) {
+        guard let url = bundle.url(
+            forResource: effect.resourceName,
+            withExtension: "mp3",
+            subdirectory: "AudioResource"
+        ) else {
+            errorMessage = "Sound resource is unavailable."
+            return
+        }
+
+        do {
+            let player = try AVAudioPlayer(contentsOf: url)
+            player.prepareToPlay()
+            players[effect] = player
+        } catch {
+            errorMessage = "Sound could not be loaded."
+        }
     }
 }
 ```

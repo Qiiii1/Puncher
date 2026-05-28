@@ -5,6 +5,7 @@
 //  Created by 李棋 on 2026/5/27.
 //
 
+import Foundation
 import Testing
 @testable import Puncher_Watch_App
 
@@ -64,6 +65,30 @@ struct MotionTriggerDetectorTests {
         #expect(acceptedLater)
     }
 
+    @Test func thirdConsecutiveTriggerUsesEnhancedEffect() {
+        var detector = MotionTriggerDetector(sensitivity: 0.5)
+
+        let first = detector.trigger(for: strongSwing(at: 1.0))
+        let second = detector.trigger(for: strongSwing(at: 1.4))
+        let third = detector.trigger(for: strongSwing(at: 1.8))
+
+        #expect(first == .basic)
+        #expect(second == .basic)
+        #expect(third == .enhanced)
+    }
+
+    @Test func comboWindowResetStartsBackAtBasic() {
+        var detector = MotionTriggerDetector(sensitivity: 0.5)
+
+        let first = detector.trigger(for: strongSwing(at: 1.0))
+        let second = detector.trigger(for: strongSwing(at: 1.4))
+        let delayed = detector.trigger(for: strongSwing(at: 3.1))
+
+        #expect(first == .basic)
+        #expect(second == .basic)
+        #expect(delayed == .basic)
+    }
+
     @Test func higherSensitivityAcceptsAWeakerSwing() {
         let weakerSwing = MotionSample(
             accelerationMagnitude: 0.9,
@@ -92,5 +117,13 @@ struct MotionTriggerDetectorTests {
 
         #expect(sample.accelerationMagnitude == 5.0)
         #expect(sample.rotationMagnitude == 2.0)
+    }
+
+    private func strongSwing(at timestamp: TimeInterval) -> MotionSample {
+        MotionSample(
+            accelerationMagnitude: 1.2,
+            rotationMagnitude: 3.0,
+            timestamp: timestamp
+        )
     }
 }

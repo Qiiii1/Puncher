@@ -8,6 +8,8 @@ struct MotionTriggerDetectorCheck {
         deliberateFastSwingTriggers()
         minorMovementIsIgnored()
         cooldownSuppressesRepeatTriggers()
+        thirdConsecutiveTriggerUsesEnhancedEffect()
+        comboWindowResetStartsBackAtBasic()
         higherSensitivityAcceptsAWeakerSwing()
         vectorComponentsProduceMagnitudes()
         print("MotionTriggerDetector checks passed")
@@ -72,6 +74,22 @@ struct MotionTriggerDetectorCheck {
         )
     }
 
+    private static func thirdConsecutiveTriggerUsesEnhancedEffect() {
+        var detector = MotionTriggerDetector(sensitivity: 0.5)
+
+        require(detector.trigger(for: strongSwing(at: 1.0)) == .basic, "first swing should use basic sound")
+        require(detector.trigger(for: strongSwing(at: 1.4)) == .basic, "second swing should use basic sound")
+        require(detector.trigger(for: strongSwing(at: 1.8)) == .enhanced, "third swing should use enhanced sound")
+    }
+
+    private static func comboWindowResetStartsBackAtBasic() {
+        var detector = MotionTriggerDetector(sensitivity: 0.5)
+
+        require(detector.trigger(for: strongSwing(at: 1.0)) == .basic, "first swing should use basic sound")
+        require(detector.trigger(for: strongSwing(at: 1.4)) == .basic, "second swing should use basic sound")
+        require(detector.trigger(for: strongSwing(at: 3.1)) == .basic, "delayed swing should restart combo")
+    }
+
     private static func higherSensitivityAcceptsAWeakerSwing() {
         let sample = MotionSample(
             accelerationMagnitude: 0.9,
@@ -111,5 +129,13 @@ struct MotionTriggerDetectorCheck {
             FileHandle.standardError.write(Data("FAIL: \(message)\n".utf8))
             exit(EXIT_FAILURE)
         }
+    }
+
+    private static func strongSwing(at timestamp: TimeInterval) -> MotionSample {
+        MotionSample(
+            accelerationMagnitude: 1.2,
+            rotationMagnitude: 3.0,
+            timestamp: timestamp
+        )
     }
 }

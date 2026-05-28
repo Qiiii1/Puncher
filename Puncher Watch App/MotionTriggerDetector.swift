@@ -41,15 +41,23 @@ struct MotionSample {
     }
 }
 
+nonisolated enum MotionTriggerEffect: CaseIterable, Equatable, Hashable {
+    case basic
+    case enhanced
+}
+
 struct MotionTriggerDetector {
     var sensitivity: Double
     var cooldown: TimeInterval
+    var comboWindow: TimeInterval
 
     private var lastTriggerTime: TimeInterval?
+    private var consecutiveTriggerCount = 0
 
-    init(sensitivity: Double, cooldown: TimeInterval = 0.35) {
+    init(sensitivity: Double, cooldown: TimeInterval = 0.35, comboWindow: TimeInterval = 1.5) {
         self.sensitivity = sensitivity
         self.cooldown = cooldown
+        self.comboWindow = comboWindow
     }
 
     private var thresholdScale: Double {
@@ -64,19 +72,35 @@ struct MotionTriggerDetector {
         2.4 * thresholdScale
     }
 
-    mutating func shouldTrigger(for sample: MotionSample) -> Bool {
+    mutating func trigger(for sample: MotionSample) -> MotionTriggerEffect? {
         guard sample.accelerationMagnitude >= accelerationThreshold,
               sample.rotationMagnitude >= rotationThreshold else {
-            return false
+            return nil
         }
 
         if let lastTriggerTime,
            sample.timestamp - lastTriggerTime < cooldown {
-            return false
+            return nil
+        }
+
+        if let lastTriggerTime,
+           sample.timestamp - lastTriggerTime <= comboWindow {
+            consecutiveTriggerCount += 1
+        } else {
+            consecutiveTriggerCount = 1
         }
 
         lastTriggerTime = sample.timestamp
-        return true
+        if consecutiveTriggerCount >= 3 {
+            consecutiveTriggerCount = 0
+            return .enhanced
+        }
+
+        return .basic
+    }
+
+    mutating func shouldTrigger(for sample: MotionSample) -> Bool {
+        trigger(for: sample) != nil
     }
 
     func intensity(for sample: MotionSample) -> Double {

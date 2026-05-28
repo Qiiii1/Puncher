@@ -7,8 +7,9 @@ Puncher is a small SwiftUI watchOS prototype: open the app, swing your wrist qui
 - `Core Motion` supplies user acceleration and rotation-rate samples while the view is visible.
 - `MotionTriggerDetector` accepts a fast intentional movement only when both motion thresholds are crossed.
 - A `0.35` second cooldown prevents one swing from firing the sound repeatedly.
+- Consecutive valid movements within `1.5` seconds form a combo: the first two play the basic sound, and the third plays the enhanced sound before the combo resets.
 - The SwiftUI screen shows live intensity and trigger count, and lets you tune sensitivity on the watch.
-- `AVAudioPlayer` plays `swing.wav`, generated locally by `Tools/generate_swing_sound.swift`.
+- `AVAudioPlayer` plays `基础音效.mp3` and `强化音效.mp3` from `Puncher Watch App/AudioResource`.
 
 The app detects motion intensity; it does not estimate the physical distance traveled by the wrist.
 
@@ -32,9 +33,9 @@ swiftc -parse-as-library -module-cache-path /private/tmp/PuncherModuleCache \
 /private/tmp/motion-detector-check
 
 swiftc -parse-as-library -module-cache-path /private/tmp/PuncherModuleCache \
-  'Tests/Logic/SoundAssetCheck.swift' \
-  -o /private/tmp/sound-asset-check
-/private/tmp/sound-asset-check 'Puncher Watch App/Resources/swing.wav'
+  'Tests/Logic/AudioResourceCheck.swift' \
+  -o /private/tmp/audio-resource-check
+/private/tmp/audio-resource-check 'Puncher Watch App/AudioResource'
 ```
 
 Build the watch application and its test bundle without launching a simulator:
