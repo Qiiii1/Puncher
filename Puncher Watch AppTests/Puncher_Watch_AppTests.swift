@@ -158,21 +158,23 @@ struct MotionTriggerDetectorTests {
     }
 }
 
-struct SoundPlaybackQueueTests {
+struct SoundPlaybackLimiterTests {
 
-    @Test func queuedEffectWaitsUntilCurrentPlaybackFinishes() {
-        var queue = SoundPlaybackQueue()
+    @Test func rapidRequestsAreDroppedUntilRestFinishes() {
+        var limiter = SoundPlaybackLimiter(restInterval: 0.25)
 
-        let first = queue.request(.basic)
-        let deferred = queue.request(.enhanced)
-        let next = queue.finishCurrent()
-        let final = queue.finishCurrent()
+        let first = limiter.request(.basic)
+        let droppedDuringPlayback = limiter.request(.enhanced)
+        let restInterval = limiter.finishCurrent()
+        let droppedDuringRest = limiter.request(.enhanced)
+        limiter.finishRest()
+        let next = limiter.request(.enhanced)
 
         #expect(first == .basic)
-        #expect(deferred == nil)
+        #expect(droppedDuringPlayback == nil)
+        #expect(restInterval == 0.25)
+        #expect(droppedDuringRest == nil)
         #expect(next == .enhanced)
-        #expect(final == nil)
-        #expect(queue.currentEffect == nil)
-        #expect(queue.queuedEffectCount == 0)
+        #expect(limiter.currentEffect == .enhanced)
     }
 }

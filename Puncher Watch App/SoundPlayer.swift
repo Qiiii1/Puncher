@@ -11,7 +11,7 @@ import Foundation
 @MainActor
 final class SoundPlayer: NSObject, AVAudioPlayerDelegate {
     private var players: [MotionTriggerEffect: AVAudioPlayer] = [:]
-    private var playbackQueue = SoundPlaybackQueue()
+    private var playbackLimiter = SoundPlaybackLimiter()
     private let playbackRate: Float = 1.15
     private(set) var errorMessage: String?
 
@@ -30,7 +30,7 @@ final class SoundPlayer: NSObject, AVAudioPlayerDelegate {
             return false
         }
 
-        guard let effectToStart = playbackQueue.request(effect) else {
+        guard let effectToStart = playbackLimiter.request(effect) else {
             return true
         }
 
@@ -40,7 +40,7 @@ final class SoundPlayer: NSObject, AVAudioPlayerDelegate {
     private func start(_ effect: MotionTriggerEffect, with player: AVAudioPlayer? = nil) -> Bool {
         guard let player = player ?? players[effect] else {
             appendError("找不到\(effect.title)音效。")
-            playbackQueue.cancelAll()
+            playbackLimiter.cancelAll()
             return false
         }
 
@@ -49,17 +49,21 @@ final class SoundPlayer: NSObject, AVAudioPlayerDelegate {
         let didPlay = player.play()
         if !didPlay {
             errorMessage = "\(effect.title)音效播放失败。"
-            playbackQueue.cancelAll()
+            playbackLimiter.cancelAll()
         }
         return didPlay
     }
 
-    private func playNextQueuedEffect() {
-        guard let nextEffect = playbackQueue.finishCurrent() else {
+    private func beginRestAfterPlayback() {
+        guard let restInterval = playbackLimiter.finishCurrent() else {
             return
         }
 
-        _ = start(nextEffect)
+        Task { @MainActor [weak self] in
+            let nanoseconds = UInt64(restInterval * 1_000_000_000)
+            try? await Task.sleep(nanoseconds: nanoseconds)
+            self?.playbackLimiter.finishRest()
+        }
     }
 
     private func load(_ effect: MotionTriggerEffect, from bundle: Bundle) {
@@ -105,7 +109,7 @@ final class SoundPlayer: NSObject, AVAudioPlayerDelegate {
 
     nonisolated func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         Task { @MainActor [weak self] in
-            self?.playNextQueuedEffect()
+            self?.beginRestAfterPlayback()
         }
     }
 
@@ -116,7 +120,7 @@ final class SoundPlayer: NSObject, AVAudioPlayerDelegate {
             } else {
                 self?.appendError("音效播放中断。")
             }
-            self?.playNextQueuedEffect()
+            self?.beginRestAfterPlayback()
         }
     }
 }

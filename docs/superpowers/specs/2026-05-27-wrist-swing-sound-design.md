@@ -9,7 +9,7 @@ Build a watchOS prototype that plays a short sound when the wearer makes a quick
 - Monitor live Apple Watch motion while the app is active, and continue during lock-screen/display-off periods through a watchOS extended runtime session.
 - Detect a deliberate fast swing using motion intensity and rotation, not an estimated physical distance.
 - Play the basic sound for normal accepted gestures and the enhanced sound on the third consecutive accepted gesture.
-- Do not overlap or interrupt sound effects; queue later effects until the current effect finishes.
+- Do not overlap or interrupt sound effects; drop later effects while playback is active or in its brief post-playback rest interval.
 - Show monitoring state, latest intensity, trigger count, and a sensitivity control for on-wrist tuning.
 - Publish the project in a public GitHub repository named `Puncher`.
 
@@ -49,7 +49,7 @@ A small `WKExtendedRuntimeSessionDelegate` wrapper starts lock-screen runtime al
 
 ### `SoundPlayer`
 
-An audio service loads bundled `基础音效.mp3` and `强化音效.mp3`, prepares an `AVAudioPlayer` for each resource, activates the audio session early, and plays effects at `1.15x`. `SoundPlaybackQueue` prevents overlap: if a trigger arrives during playback, the effect waits until the current sound finishes.
+An audio service loads bundled `基础音效.mp3` and `强化音效.mp3`, prepares an `AVAudioPlayer` for each resource, activates the audio session early, and plays effects at `1.15x`. `SoundPlaybackLimiter` prevents task buildup: if a trigger arrives during playback or the `0.35` second post-playback rest interval, the effect is ignored instead of queued.
 
 ### `ContentView`
 
@@ -67,7 +67,7 @@ The watch screen replaces the template placeholder with:
 2. Core Motion delivers processed movement samples.
 3. `MotionMonitor` calculates acceleration and rotation magnitudes and supplies them to `MotionTriggerDetector`.
 4. The detector either rejects the sample or emits one trigger after its cooldown check.
-5. On a trigger, `MotionMonitor` increments the count and tells `SoundPlayer` to play or queue the basic or enhanced sound returned by the detector.
+5. On a trigger, `MotionMonitor` increments the count and asks `SoundPlayer` to play the basic or enhanced sound returned by the detector. `SoundPlayer` may ignore the request if audio is already playing or resting.
 6. `ContentView` observes published status and measurements and redraws the tuning UI.
 7. When the view is no longer active, motion updates and the extended runtime session stop.
 
@@ -81,7 +81,7 @@ The watch screen replaces the template placeholder with:
 ## Testing And Validation
 
 - Unit-test detector behavior: a qualifying swing triggers; small motion does not; cooldown suppresses duplicates; sensitivity changes acceptance; fast follow-up gestures are accepted at maximum sensitivity.
-- Unit-test playback queue behavior: active playback is not interrupted, and the next effect starts only after the current effect finishes.
+- Unit-test playback limiter behavior: active playback is not interrupted, rapid requests are dropped, and the next effect can start only after the rest interval finishes.
 - Verify the Watch App target uses explicit `Info.plist` with `WKBackgroundModes` set to `physical-therapy`.
 - Build the watch app and test target with Xcode after implementation.
 - Use the test-sound button to verify audio output.

@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a SwiftUI watchOS prototype that detects fast wrist swings, continues during lock-screen/display-off periods with watchOS extended runtime, plays a basic sound for normal triggers, plays an enhanced sound on every third consecutive trigger, and queues effects so one sound finishes before the next begins.
+**Goal:** Build a SwiftUI watchOS prototype that detects fast wrist swings, continues during lock-screen/display-off periods with watchOS extended runtime, plays a basic sound for normal triggers, plays an enhanced sound on every third consecutive trigger, and throttles playback so rapid triggers cannot pile up audio tasks.
 
-**Architecture:** Keep the trigger rule in a pure Swift `MotionTriggerDetector`, so its thresholds, cooldown, and combo counter can run without Apple Watch hardware. `MotionMonitor` adapts `CMDeviceMotion` samples into that detector, starts `ExtendedRuntimeController` for lock-screen listening, and publishes UI state. `SoundPlayer` owns the bundled basic and enhanced MP3 resources and `SoundPlaybackQueue` serializes playback. `ContentView` is the SwiftUI tuning and status surface.
+**Architecture:** Keep the trigger rule in a pure Swift `MotionTriggerDetector`, so its thresholds, cooldown, and combo counter can run without Apple Watch hardware. `MotionMonitor` adapts `CMDeviceMotion` samples into that detector, starts `ExtendedRuntimeController` for lock-screen listening, and publishes UI state. `SoundPlayer` owns the bundled basic and enhanced MP3 resources and `SoundPlaybackLimiter` drops audio requests during playback and the post-playback rest interval. `ContentView` is the SwiftUI tuning and status surface.
 
 **Tech Stack:** SwiftUI, Core Motion, AVFAudio, Swift Testing, Xcode watchOS 26.2 project, Git/GitHub CLI
 
@@ -102,8 +102,8 @@ Expected: output `MotionTriggerDetector checks passed`.
 **Files:**
 - Add: `Puncher Watch App/AudioResource/基础音效.mp3`
 - Add: `Puncher Watch App/AudioResource/强化音效.mp3`
-- Create: `Puncher Watch App/SoundPlaybackQueue.swift`
-- Create: `Tests/Logic/SoundPlaybackQueueCheck.swift`
+- Create: `Puncher Watch App/SoundPlaybackLimiter.swift`
+- Create: `Tests/Logic/SoundPlaybackLimiterCheck.swift`
 - Create: `Puncher Watch App/SoundPlayer.swift`
 
 - [x] **Step 1: Add bundled MP3 resources**
@@ -119,7 +119,7 @@ import Foundation
 @MainActor
 final class SoundPlayer: NSObject, AVAudioPlayerDelegate {
     private var players: [MotionTriggerEffect: AVAudioPlayer] = [:]
-    private var playbackQueue = SoundPlaybackQueue()
+    private var playbackLimiter = SoundPlaybackLimiter()
     private(set) var errorMessage: String?
 
     init(bundle: Bundle = .main) {
@@ -131,7 +131,7 @@ final class SoundPlayer: NSObject, AVAudioPlayerDelegate {
     @discardableResult
     func play(_ effect: MotionTriggerEffect) -> Bool {
         guard let player = players[effect] else { return false }
-        guard playbackQueue.request(effect) != nil else { return true }
+        guard playbackLimiter.request(effect) != nil else { return true }
         player.currentTime = 0
         player.rate = 1.15
         return player.play()
@@ -161,7 +161,7 @@ final class SoundPlayer: NSObject, AVAudioPlayerDelegate {
 }
 ```
 
-The service exposes an error string rather than stopping motion monitoring if the sound is unavailable. Playback is serialized: a new effect waits until the current `AVAudioPlayer` delegate callback reports completion.
+The service exposes an error string rather than stopping motion monitoring if the sound is unavailable. Playback is throttled: a new effect is ignored while one is playing or during the `0.35` second rest interval after completion.
 
 ### Task 4: Motion Observation And SwiftUI Surface
 
