@@ -2,24 +2,26 @@
 
 ## Goal
 
-Build a watchOS prototype that plays a short sound when the wearer makes a quick wrist-swing motion while the app is visible and active.
+Build a watchOS prototype that plays a short sound when the wearer makes a quick wrist-swing motion while the app is active, including display-off periods covered by watchOS extended runtime.
 
 ## Scope
 
-- Monitor live Apple Watch motion only while the app is in the foreground.
+- Monitor live Apple Watch motion while the app is active, and continue during lock-screen/display-off periods through a watchOS extended runtime session.
 - Detect a deliberate fast swing using motion intensity and rotation, not an estimated physical distance.
 - Play the basic sound for normal accepted gestures and the enhanced sound on the third consecutive accepted gesture.
 - Do not overlap or interrupt sound effects; queue later effects until the current effect finishes.
 - Show monitoring state, latest intensity, trigger count, and a sensitivity control for on-wrist tuning.
 - Publish the project in a public GitHub repository named `Puncher`.
 
-The prototype does not monitor in the background, run a workout session, estimate centimeters of travel, classify swing direction, or persist analytics.
+The prototype does not run indefinitely in the background, run a workout session, estimate centimeters of travel, classify swing direction, or persist analytics.
 
 ## Platform Capability
 
 `CoreMotion.CMMotionManager` exposes processed `CMDeviceMotion` data on Apple Watch, including `userAcceleration` and `rotationRate`. These values identify quick intentional motions without integrating acceleration into a drifting distance estimate.
 
 `AVFAudio.AVAudioPlayer` plays bundled MP3 resources when a motion is accepted. `基础音效.mp3` is used for normal accepted gestures, and `强化音效.mp3` is used for the third consecutive accepted gesture.
+
+`WatchKit.WKExtendedRuntimeSession` lets the app continue processing data and playing sounds after the user stops interacting or the display turns off. The Watch App declares `WKBackgroundModes` with `physical-therapy` in `Info.plist`; if Background App Refresh is disabled or the system invalidates the session, the UI reports that lock-screen listening ended.
 
 ## Architecture
 
@@ -36,9 +38,14 @@ An observable, main-actor service owns one `CMMotionManager`, requests device-mo
 - whether sensing is active or unavailable;
 - latest normalized motion intensity;
 - accepted trigger count;
-- a user-adjustable sensitivity value.
+- a user-adjustable sensitivity value;
+- any lock-screen runtime warning.
 
-It begins updates when the SwiftUI view appears and stops them when the view disappears. When the detector accepts a motion, it asks the audio service to play.
+It begins updates when the SwiftUI view appears, starts an `ExtendedRuntimeController`, and stops both motion and the runtime session when the view disappears. When the detector accepts a motion, it asks the audio service to play.
+
+### `ExtendedRuntimeController`
+
+A small `WKExtendedRuntimeSessionDelegate` wrapper starts lock-screen runtime alongside motion monitoring. It clears messages when the session starts, warns before expiration, and surfaces errors if watchOS refuses or invalidates the session.
 
 ### `SoundPlayer`
 
@@ -62,18 +69,20 @@ The watch screen replaces the template placeholder with:
 4. The detector either rejects the sample or emits one trigger after its cooldown check.
 5. On a trigger, `MotionMonitor` increments the count and tells `SoundPlayer` to play or queue the basic or enhanced sound returned by the detector.
 6. `ContentView` observes published status and measurements and redraws the tuning UI.
-7. When the view is no longer active, motion updates stop.
+7. When the view is no longer active, motion updates and the extended runtime session stop.
 
 ## Failure Behavior
 
 - If device motion is unavailable, the UI reports that a physical Apple Watch is required and audio can still be tested manually.
+- If extended runtime cannot start, or expires, the UI reports a lock-screen listening message while normal foreground testing remains available.
 - If the sound resource cannot be loaded or played, monitoring continues and the UI exposes an audio-unavailable message.
-- Motion updates are stopped during teardown or view disappearance to avoid unnecessary sensor and battery use.
+- Motion updates and the runtime session are stopped during teardown or view disappearance to avoid unnecessary sensor and battery use.
 
 ## Testing And Validation
 
 - Unit-test detector behavior: a qualifying swing triggers; small motion does not; cooldown suppresses duplicates; sensitivity changes acceptance; fast follow-up gestures are accepted at maximum sensitivity.
 - Unit-test playback queue behavior: active playback is not interrupted, and the next effect starts only after the current effect finishes.
+- Verify the Watch App target uses explicit `Info.plist` with `WKBackgroundModes` set to `physical-therapy`.
 - Build the watch app and test target with Xcode after implementation.
 - Use the test-sound button to verify audio output.
 - Validate gesture thresholds on a physical Apple Watch because the simulator cannot reproduce real wrist motion.

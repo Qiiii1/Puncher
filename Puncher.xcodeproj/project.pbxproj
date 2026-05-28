@@ -55,9 +55,22 @@
 		4EECC1B32FC73F0F0001E733 /* Puncher Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Puncher Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		4EECC1CA2FC87B6A0001E733 /* Exceptions for "Puncher Watch App" folder in "Puncher Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 4EECC1992FC73F0D0001E733 /* Puncher Watch App */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4EECC19E2FC73F0D0001E733 /* Puncher Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				4EECC1CA2FC87B6A0001E733 /* Exceptions for "Puncher Watch App" folder in "Puncher Watch App" target */,
+			);
 			path = "Puncher Watch App";
 			sourceTree = "<group>";
 		};
@@ -456,9 +469,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6KJUFW2PKN;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Puncher Watch App/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Puncher;
-				INFOPLIST_KEY_NSMotionUsageDescription = "Puncher reads wrist movement while the app is open to play swing sounds.";
+				INFOPLIST_KEY_NSMotionUsageDescription = "Puncher reads wrist movement while listening is active, including lock-screen extended runtime, to play swing sounds.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -490,9 +504,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6KJUFW2PKN;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Puncher Watch App/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Puncher;
-				INFOPLIST_KEY_NSMotionUsageDescription = "Puncher reads wrist movement while the app is open to play swing sounds.";
+				INFOPLIST_KEY_NSMotionUsageDescription = "Puncher reads wrist movement while listening is active, including lock-screen extended runtime, to play swing sounds.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				LD_RUNPATH_SEARCH_PATHS = (

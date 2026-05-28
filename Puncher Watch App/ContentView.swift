@@ -71,6 +71,13 @@ struct ContentView: View {
                         .foregroundStyle(.red)
                         .multilineTextAlignment(.center)
                 }
+
+                if let runtimeMessage = monitor.runtimeMessage {
+                    Text(runtimeMessage)
+                        .font(.caption2)
+                        .foregroundStyle(.orange)
+                        .multilineTextAlignment(.center)
+                }
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)

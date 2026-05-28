@@ -4,7 +4,8 @@ Puncher is a small SwiftUI watchOS prototype: open the app, swing your wrist qui
 
 ## How It Works
 
-- `Core Motion` supplies user acceleration and rotation-rate samples while the view is visible.
+- `Core Motion` supplies user acceleration and rotation-rate samples while listening is active.
+- `WKExtendedRuntimeSession` keeps the watch app running after the display turns off, using the `physical-therapy` watch background mode.
 - `MotionTriggerDetector` accepts a fast intentional movement only when both motion thresholds are crossed.
 - Motion updates run at `100 Hz`, and a `0.2` second cooldown keeps one swing from firing repeatedly without making quick follow-ups feel sluggish.
 - Consecutive valid movements within `1.5` seconds form a combo: the first two play the basic sound, and the third plays the enhanced sound before the combo resets.
@@ -18,8 +19,9 @@ The app detects motion intensity; it does not estimate the physical distance tra
 1. Open the project in Xcode and run the `Puncher Watch App` scheme on an Apple Watch.
 2. Open Puncher and tap **测试音效** to verify speaker output.
 3. Swing your wrist firmly and adjust **灵敏度** until deliberate motions trigger consistently.
+4. Lock or lower the watch display and test again. If the watch reports that lock-screen listening could not start, check that Background App Refresh is enabled for the app.
 
-Motion sensing is active only while the app screen is open. A real watch is required to tune gesture feel because simulated motion cannot reproduce a wrist swing.
+Lock-screen sensing is best-effort extended runtime, not indefinite background execution. A real watch is required to tune gesture feel because simulated motion cannot reproduce a wrist swing.
 
 ## Development Checks
 
@@ -43,6 +45,13 @@ swiftc -parse-as-library -module-cache-path /private/tmp/PuncherModuleCache \
   'Tests/Logic/SoundPlaybackQueueCheck.swift' \
   -o /private/tmp/sound-playback-queue-check
 /private/tmp/sound-playback-queue-check
+
+swiftc -parse-as-library -module-cache-path /private/tmp/PuncherModuleCache \
+  'Tests/Logic/BackgroundModeProjectCheck.swift' \
+  -o /private/tmp/background-mode-project-check
+/private/tmp/background-mode-project-check \
+  'Puncher.xcodeproj/project.pbxproj' \
+  'Puncher Watch App/Info.plist'
 ```
 
 Build the watch application and its test bundle without launching a simulator:

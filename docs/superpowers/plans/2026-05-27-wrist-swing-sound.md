@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a SwiftUI watchOS prototype that detects fast wrist swings while visible, plays a basic sound for normal triggers, plays an enhanced sound on every third consecutive trigger, and queues effects so one sound finishes before the next begins.
+**Goal:** Build a SwiftUI watchOS prototype that detects fast wrist swings, continues during lock-screen/display-off periods with watchOS extended runtime, plays a basic sound for normal triggers, plays an enhanced sound on every third consecutive trigger, and queues effects so one sound finishes before the next begins.
 
-**Architecture:** Keep the trigger rule in a pure Swift `MotionTriggerDetector`, so its thresholds, cooldown, and combo counter can run without Apple Watch hardware. `MotionMonitor` adapts `CMDeviceMotion` samples into that detector and publishes UI state, while `SoundPlayer` owns the bundled basic and enhanced MP3 resources and `SoundPlaybackQueue` serializes playback. `ContentView` is the SwiftUI tuning and status surface.
+**Architecture:** Keep the trigger rule in a pure Swift `MotionTriggerDetector`, so its thresholds, cooldown, and combo counter can run without Apple Watch hardware. `MotionMonitor` adapts `CMDeviceMotion` samples into that detector, starts `ExtendedRuntimeController` for lock-screen listening, and publishes UI state. `SoundPlayer` owns the bundled basic and enhanced MP3 resources and `SoundPlaybackQueue` serializes playback. `ContentView` is the SwiftUI tuning and status surface.
 
 **Tech Stack:** SwiftUI, Core Motion, AVFAudio, Swift Testing, Xcode watchOS 26.2 project, Git/GitHub CLI
 
@@ -167,6 +167,8 @@ The service exposes an error string rather than stopping motion monitoring if th
 
 **Files:**
 - Create: `Puncher Watch App/MotionMonitor.swift`
+- Create: `Puncher Watch App/ExtendedRuntimeController.swift`
+- Create: `Puncher Watch App/Info.plist`
 - Modify: `Puncher Watch App/ContentView.swift`
 - Modify: `Puncher.xcodeproj/project.pbxproj`
 
@@ -175,6 +177,7 @@ The service exposes an error string rather than stopping motion monitoring if th
 ```swift
 import Combine
 import CoreMotion
+import WatchKit
 
 @MainActor
 final class MotionMonitor: ObservableObject {
@@ -183,10 +186,12 @@ final class MotionMonitor: ObservableObject {
     @Published private(set) var latestIntensity = 0.0
     private let motionManager = CMMotionManager()
     private let soundPlayer = SoundPlayer()
+    private let runtimeController = ExtendedRuntimeController()
     private var detector = MotionTriggerDetector(sensitivity: MotionTriggerDetector.defaultSensitivity)
 
     func start() {
         guard motionManager.isDeviceMotionAvailable else { return }
+        runtimeController.start()
         motionManager.deviceMotionUpdateInterval = 1.0 / 100.0
         motionManager.startDeviceMotionUpdates(to: .main) { [weak self] motion, _ in
             guard let self, let motion else { return }
@@ -195,6 +200,7 @@ final class MotionMonitor: ObservableObject {
     }
 
     func stop() {
+        runtimeController.stop()
         motionManager.stopDeviceMotionUpdates()
     }
 
@@ -222,13 +228,17 @@ final class MotionMonitor: ObservableObject {
 
 Compute vector magnitudes from `userAcceleration` and `rotationRate`, and ask the detector for each accepted trigger.
 
+- [x] **Step 1b: Add lock-screen extended runtime**
+
+Use `WKExtendedRuntimeSession` through `ExtendedRuntimeController` so motion processing and sound playback can continue after the display turns off. Declare `WKBackgroundModes` as `physical-therapy` in the Watch App `Info.plist`, and exclude that plist from synchronized resource membership in the Xcode project.
+
 - [x] **Step 2: Replace the template with a SwiftUI control surface**
 
 Build a `ScrollView`/`VStack` screen with monitoring status, a `Gauge`, count, `Slider`, audio test button, and any motion/audio unavailability explanation. Call `start()` and `stop()` from view lifecycle callbacks.
 
 - [x] **Step 3: Declare motion use**
 
-Set `INFOPLIST_KEY_NSMotionUsageDescription` on the watch target configurations to explain that wrist motion is read only while the app is open.
+Set `NSMotionUsageDescription` in the Watch App `Info.plist` to explain that wrist motion is read while listening is active, including lock-screen extended runtime.
 
 ### Task 5: Documentation And Verification
 

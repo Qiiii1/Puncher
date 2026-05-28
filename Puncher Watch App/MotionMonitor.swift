@@ -48,6 +48,7 @@ final class MotionMonitor: ObservableObject {
     @Published private(set) var latestIntensity = 0.0
     @Published private(set) var triggerCount = 0
     @Published private(set) var audioMessage: String?
+    @Published private(set) var runtimeMessage: String?
     @Published var sensitivity = MotionTriggerDetector.defaultSensitivity {
         didSet {
             detector.sensitivity = sensitivity
@@ -56,21 +57,28 @@ final class MotionMonitor: ObservableObject {
 
     private let motionManager: CMMotionManager
     private let soundPlayer: SoundPlayer
+    private let runtimeController: ExtendedRuntimeController
     private var detector: MotionTriggerDetector
 
     init() {
         let soundPlayer = SoundPlayer()
+        let runtimeController = ExtendedRuntimeController()
         motionManager = CMMotionManager()
         self.soundPlayer = soundPlayer
+        self.runtimeController = runtimeController
         detector = MotionTriggerDetector(sensitivity: MotionTriggerDetector.defaultSensitivity)
         audioMessage = soundPlayer.errorMessage
+        bindRuntimeController()
     }
 
     init(motionManager: CMMotionManager, soundPlayer: SoundPlayer) {
+        let runtimeController = ExtendedRuntimeController()
         self.motionManager = motionManager
         self.soundPlayer = soundPlayer
+        self.runtimeController = runtimeController
         detector = MotionTriggerDetector(sensitivity: MotionTriggerDetector.defaultSensitivity)
         audioMessage = soundPlayer.errorMessage
+        bindRuntimeController()
     }
 
     func start() {
@@ -83,6 +91,7 @@ final class MotionMonitor: ObservableObject {
         }
 
         state = .monitoring
+        runtimeController.start()
         motionManager.deviceMotionUpdateInterval = 1.0 / 100.0
         motionManager.startDeviceMotionUpdates(to: .main) { [weak self] motion, error in
             MainActor.assumeIsolated {
@@ -102,6 +111,7 @@ final class MotionMonitor: ObservableObject {
     }
 
     func stop() {
+        runtimeController.stop()
         motionManager.stopDeviceMotionUpdates()
         latestIntensity = 0.0
         if state == .monitoring {
@@ -138,6 +148,12 @@ final class MotionMonitor: ObservableObject {
         triggerCount += 1
         if !soundPlayer.play(effect) {
             audioMessage = soundPlayer.errorMessage ?? "音效播放失败。"
+        }
+    }
+
+    private func bindRuntimeController() {
+        runtimeController.onMessageChange = { [weak self] message in
+            self?.runtimeMessage = message
         }
     }
 }
