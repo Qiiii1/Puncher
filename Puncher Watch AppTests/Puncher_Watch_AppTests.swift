@@ -119,6 +119,11 @@ struct MotionTriggerDetectorTests {
         #expect(maximumTriggered)
     }
 
+    @Test func defaultSensitivityStartsBelowMaximum() {
+        #expect(MotionTriggerDetector.defaultSensitivity == 70.0)
+        #expect(MotionTriggerDetector.defaultSensitivity < 100.0)
+    }
+
     @Test func defaultCooldownAllowsFastFollowUpSwing() {
         var detector = MotionTriggerDetector(sensitivity: 100.0)
 

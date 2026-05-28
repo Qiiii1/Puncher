@@ -61,6 +61,8 @@ struct MotionSample {
 }
 
 struct MotionTriggerDetector {
+    static let defaultSensitivity = 70.0
+
     var sensitivity: Double
     var cooldown: TimeInterval
     private var lastTriggerTime: TimeInterval?
@@ -88,7 +90,7 @@ struct MotionTriggerDetector {
 }
 ```
 
-Thresholds scale downward as sensitivity increases on a `0...100` scale, with midpoint thresholds of `1.05 g` and `2.4 rad/s`.
+Thresholds scale downward as sensitivity increases on a `0...100` scale, with midpoint thresholds of `1.05 g` and `2.4 rad/s`. The app starts at `70` instead of the maximum to avoid accidental triggers.
 
 - [x] **Step 4: Run portable checks**
 
@@ -176,12 +178,12 @@ import CoreMotion
 
 @MainActor
 final class MotionMonitor: ObservableObject {
-    @Published var sensitivity = 100.0
+    @Published var sensitivity = MotionTriggerDetector.defaultSensitivity
     @Published private(set) var triggerCount = 0
     @Published private(set) var latestIntensity = 0.0
     private let motionManager = CMMotionManager()
     private let soundPlayer = SoundPlayer()
-    private var detector = MotionTriggerDetector(sensitivity: 100.0)
+    private var detector = MotionTriggerDetector(sensitivity: MotionTriggerDetector.defaultSensitivity)
 
     func start() {
         guard motionManager.isDeviceMotionAvailable else { return }

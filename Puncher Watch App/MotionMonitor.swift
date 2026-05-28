@@ -48,7 +48,7 @@ final class MotionMonitor: ObservableObject {
     @Published private(set) var latestIntensity = 0.0
     @Published private(set) var triggerCount = 0
     @Published private(set) var audioMessage: String?
-    @Published var sensitivity = 100.0 {
+    @Published var sensitivity = MotionTriggerDetector.defaultSensitivity {
         didSet {
             detector.sensitivity = sensitivity
         }
@@ -62,14 +62,14 @@ final class MotionMonitor: ObservableObject {
         let soundPlayer = SoundPlayer()
         motionManager = CMMotionManager()
         self.soundPlayer = soundPlayer
-        detector = MotionTriggerDetector(sensitivity: 100.0)
+        detector = MotionTriggerDetector(sensitivity: MotionTriggerDetector.defaultSensitivity)
         audioMessage = soundPlayer.errorMessage
     }
 
     init(motionManager: CMMotionManager, soundPlayer: SoundPlayer) {
         self.motionManager = motionManager
         self.soundPlayer = soundPlayer
-        detector = MotionTriggerDetector(sensitivity: 100.0)
+        detector = MotionTriggerDetector(sensitivity: MotionTriggerDetector.defaultSensitivity)
         audioMessage = soundPlayer.errorMessage
     }
 

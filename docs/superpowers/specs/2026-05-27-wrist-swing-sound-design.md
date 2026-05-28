@@ -27,7 +27,7 @@ The prototype does not monitor in the background, run a workout session, estimat
 
 A pure value-oriented detector owns threshold, cooldown, and combo behavior. Each sample contains acceleration magnitude, rotation magnitude, and timestamp. It returns whether one gesture should trigger audio, and which audio effect should play.
 
-The starting rule accepts a motion when both adjusted thresholds are crossed and no accepted event has occurred during the previous `0.2` seconds. Accepted gestures within `1.5` seconds count as consecutive. The first two accepted gestures in a combo play the basic sound, and the third plays the enhanced sound before the combo resets. Sensitivity uses a `0...100` scale, where `100` is the most responsive setting. This keeps the rule testable and prevents one wrist swing from producing repeated sounds.
+The starting rule accepts a motion when both adjusted thresholds are crossed and no accepted event has occurred during the previous `0.2` seconds. Accepted gestures within `1.5` seconds count as consecutive. The first two accepted gestures in a combo play the basic sound, and the third plays the enhanced sound before the combo resets. Sensitivity uses a `0...100` scale, where `100` is the most responsive setting; the app starts at `70` to reduce accidental triggers. This keeps the rule testable and prevents one wrist swing from producing repeated sounds.
 
 ### `MotionMonitor`
 

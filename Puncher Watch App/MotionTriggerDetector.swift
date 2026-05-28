@@ -47,6 +47,8 @@ nonisolated enum MotionTriggerEffect: CaseIterable, Equatable, Hashable {
 }
 
 struct MotionTriggerDetector {
+    static let defaultSensitivity = 70.0
+
     var sensitivity: Double
     var cooldown: TimeInterval
     var comboWindow: TimeInterval

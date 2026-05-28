@@ -12,6 +12,7 @@ struct MotionTriggerDetectorCheck {
         comboWindowResetStartsBackAtBasic()
         higherSensitivityAcceptsAWeakerSwing()
         sensitivityUsesZeroToOneHundredScale()
+        defaultSensitivityStartsBelowMaximum()
         defaultCooldownAllowsFastFollowUpSwing()
         vectorComponentsProduceMagnitudes()
         print("MotionTriggerDetector checks passed")
@@ -128,6 +129,11 @@ struct MotionTriggerDetectorCheck {
             maximumSensitivity.shouldTrigger(for: sample),
             "100 sensitivity should be the maximum"
         )
+    }
+
+    private static func defaultSensitivityStartsBelowMaximum() {
+        require(MotionTriggerDetector.defaultSensitivity == 70.0, "default sensitivity should start at 70")
+        require(MotionTriggerDetector.defaultSensitivity < 100.0, "default sensitivity should not start at maximum")
     }
 
     private static func defaultCooldownAllowsFastFollowUpSwing() {
