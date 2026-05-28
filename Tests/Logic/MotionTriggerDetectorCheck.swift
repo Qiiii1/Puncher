@@ -11,12 +11,14 @@ struct MotionTriggerDetectorCheck {
         thirdConsecutiveTriggerUsesEnhancedEffect()
         comboWindowResetStartsBackAtBasic()
         higherSensitivityAcceptsAWeakerSwing()
+        sensitivityUsesZeroToOneHundredScale()
+        defaultCooldownAllowsFastFollowUpSwing()
         vectorComponentsProduceMagnitudes()
         print("MotionTriggerDetector checks passed")
     }
 
     private static func deliberateFastSwingTriggers() {
-        var detector = MotionTriggerDetector(sensitivity: 0.5)
+        var detector = MotionTriggerDetector(sensitivity: 50.0)
         require(
             detector.shouldTrigger(
                 for: MotionSample(
@@ -30,7 +32,7 @@ struct MotionTriggerDetectorCheck {
     }
 
     private static func minorMovementIsIgnored() {
-        var detector = MotionTriggerDetector(sensitivity: 0.5)
+        var detector = MotionTriggerDetector(sensitivity: 50.0)
         require(
             !detector.shouldTrigger(
                 for: MotionSample(
@@ -44,7 +46,7 @@ struct MotionTriggerDetectorCheck {
     }
 
     private static func cooldownSuppressesRepeatTriggers() {
-        var detector = MotionTriggerDetector(sensitivity: 0.5)
+        var detector = MotionTriggerDetector(sensitivity: 50.0)
         let sample = MotionSample(
             accelerationMagnitude: 1.2,
             rotationMagnitude: 3.0,
@@ -57,7 +59,7 @@ struct MotionTriggerDetectorCheck {
                 for: MotionSample(
                     accelerationMagnitude: 1.2,
                     rotationMagnitude: 3.0,
-                    timestamp: 1.2
+                    timestamp: 1.1
                 )
             ),
             "a repeat during cooldown should not trigger"
@@ -67,7 +69,7 @@ struct MotionTriggerDetectorCheck {
                 for: MotionSample(
                     accelerationMagnitude: 1.2,
                     rotationMagnitude: 3.0,
-                    timestamp: 1.36
+                    timestamp: 1.22
                 )
             ),
             "a later swing should trigger"
@@ -75,7 +77,7 @@ struct MotionTriggerDetectorCheck {
     }
 
     private static func thirdConsecutiveTriggerUsesEnhancedEffect() {
-        var detector = MotionTriggerDetector(sensitivity: 0.5)
+        var detector = MotionTriggerDetector(sensitivity: 50.0)
 
         require(detector.trigger(for: strongSwing(at: 1.0)) == .basic, "first swing should use basic sound")
         require(detector.trigger(for: strongSwing(at: 1.4)) == .basic, "second swing should use basic sound")
@@ -83,7 +85,7 @@ struct MotionTriggerDetectorCheck {
     }
 
     private static func comboWindowResetStartsBackAtBasic() {
-        var detector = MotionTriggerDetector(sensitivity: 0.5)
+        var detector = MotionTriggerDetector(sensitivity: 50.0)
 
         require(detector.trigger(for: strongSwing(at: 1.0)) == .basic, "first swing should use basic sound")
         require(detector.trigger(for: strongSwing(at: 1.4)) == .basic, "second swing should use basic sound")
@@ -97,7 +99,7 @@ struct MotionTriggerDetectorCheck {
             timestamp: 1.0
         )
         var lowSensitivity = MotionTriggerDetector(sensitivity: 0.0)
-        var highSensitivity = MotionTriggerDetector(sensitivity: 1.0)
+        var highSensitivity = MotionTriggerDetector(sensitivity: 100.0)
 
         require(
             !lowSensitivity.shouldTrigger(for: sample),
@@ -106,6 +108,35 @@ struct MotionTriggerDetectorCheck {
         require(
             highSensitivity.shouldTrigger(for: sample),
             "high sensitivity should accept a weaker swing"
+        )
+    }
+
+    private static func sensitivityUsesZeroToOneHundredScale() {
+        let sample = MotionSample(
+            accelerationMagnitude: 0.9,
+            rotationMagnitude: 2.0,
+            timestamp: 1.0
+        )
+        var midpointSensitivity = MotionTriggerDetector(sensitivity: 50.0)
+        var maximumSensitivity = MotionTriggerDetector(sensitivity: 100.0)
+
+        require(
+            !midpointSensitivity.shouldTrigger(for: sample),
+            "50 sensitivity should remain the midpoint, not the maximum"
+        )
+        require(
+            maximumSensitivity.shouldTrigger(for: sample),
+            "100 sensitivity should be the maximum"
+        )
+    }
+
+    private static func defaultCooldownAllowsFastFollowUpSwing() {
+        var detector = MotionTriggerDetector(sensitivity: 100.0)
+
+        require(detector.trigger(for: strongSwing(at: 1.0)) == .basic, "first swing should trigger")
+        require(
+            detector.trigger(for: strongSwing(at: 1.22)) == .basic,
+            "fast follow-up swing should not feel delayed by the default cooldown"
         )
     }
 

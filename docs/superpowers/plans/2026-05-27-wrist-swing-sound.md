@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a SwiftUI watchOS prototype that detects fast wrist swings while visible, plays a basic sound for normal triggers, and plays an enhanced sound on every third consecutive trigger.
+**Goal:** Build a SwiftUI watchOS prototype that detects fast wrist swings while visible, plays a basic sound for normal triggers, plays an enhanced sound on every third consecutive trigger, and queues effects so one sound finishes before the next begins.
 
-**Architecture:** Keep the trigger rule in a pure Swift `MotionTriggerDetector`, so its thresholds, cooldown, and combo counter can run without Apple Watch hardware. `MotionMonitor` adapts `CMDeviceMotion` samples into that detector and publishes UI state, while `SoundPlayer` owns the bundled basic and enhanced MP3 resources. `ContentView` is the SwiftUI tuning and status surface.
+**Architecture:** Keep the trigger rule in a pure Swift `MotionTriggerDetector`, so its thresholds, cooldown, and combo counter can run without Apple Watch hardware. `MotionMonitor` adapts `CMDeviceMotion` samples into that detector and publishes UI state, while `SoundPlayer` owns the bundled basic and enhanced MP3 resources and `SoundPlaybackQueue` serializes playback. `ContentView` is the SwiftUI tuning and status surface.
 
 **Tech Stack:** SwiftUI, Core Motion, AVFAudio, Swift Testing, Xcode watchOS 26.2 project, Git/GitHub CLI
 
@@ -39,7 +39,7 @@ Expected: a linked checkout based on `main`.
 Add tests for intentional motion, minor motion, cooldown suppression, and sensitivity:
 
 ```swift
-var detector = MotionTriggerDetector(sensitivity: 0.5)
+var detector = MotionTriggerDetector(sensitivity: 50.0)
 #expect(detector.shouldTrigger(for: MotionSample(accelerationMagnitude: 1.1, rotationMagnitude: 2.5, timestamp: 1)))
 #expect(!detector.shouldTrigger(for: MotionSample(accelerationMagnitude: 0.2, rotationMagnitude: 0.4, timestamp: 2)))
 ```
@@ -64,11 +64,12 @@ struct MotionTriggerDetector {
     var sensitivity: Double
     var cooldown: TimeInterval
     private var lastTriggerTime: TimeInterval?
-    init(sensitivity: Double, cooldown: TimeInterval = 0.35) {
+    init(sensitivity: Double, cooldown: TimeInterval = 0.2) {
         self.sensitivity = sensitivity
         self.cooldown = cooldown
     }
-    private var thresholdScale: Double { 1.25 - min(max(sensitivity, 0), 1) * 0.5 }
+    private var normalizedSensitivity: Double { min(max(sensitivity, 0), 100) / 100 }
+    private var thresholdScale: Double { 1.25 - normalizedSensitivity * 0.5 }
     private var accelerationThreshold: Double { 1.05 * thresholdScale }
     private var rotationThreshold: Double { 2.4 * thresholdScale }
 
@@ -87,7 +88,7 @@ struct MotionTriggerDetector {
 }
 ```
 
-Thresholds scale downward as sensitivity increases, with default thresholds of `1.05 g` and `2.4 rad/s`.
+Thresholds scale downward as sensitivity increases on a `0...100` scale, with midpoint thresholds of `1.05 g` and `2.4 rad/s`.
 
 - [x] **Step 4: Run portable checks**
 
@@ -99,6 +100,8 @@ Expected: output `MotionTriggerDetector checks passed`.
 **Files:**
 - Add: `Puncher Watch App/AudioResource/基础音效.mp3`
 - Add: `Puncher Watch App/AudioResource/强化音效.mp3`
+- Create: `Puncher Watch App/SoundPlaybackQueue.swift`
+- Create: `Tests/Logic/SoundPlaybackQueueCheck.swift`
 - Create: `Puncher Watch App/SoundPlayer.swift`
 
 - [x] **Step 1: Add bundled MP3 resources**
@@ -112,8 +115,9 @@ import AVFAudio
 import Foundation
 
 @MainActor
-final class SoundPlayer {
+final class SoundPlayer: NSObject, AVAudioPlayerDelegate {
     private var players: [MotionTriggerEffect: AVAudioPlayer] = [:]
+    private var playbackQueue = SoundPlaybackQueue()
     private(set) var errorMessage: String?
 
     init(bundle: Bundle = .main) {
@@ -125,7 +129,9 @@ final class SoundPlayer {
     @discardableResult
     func play(_ effect: MotionTriggerEffect) -> Bool {
         guard let player = players[effect] else { return false }
+        guard playbackQueue.request(effect) != nil else { return true }
         player.currentTime = 0
+        player.rate = 1.15
         return player.play()
     }
 
@@ -141,6 +147,9 @@ final class SoundPlayer {
 
         do {
             let player = try AVAudioPlayer(contentsOf: url)
+            player.delegate = self
+            player.enableRate = true
+            player.rate = 1.15
             player.prepareToPlay()
             players[effect] = player
         } catch {
@@ -150,7 +159,7 @@ final class SoundPlayer {
 }
 ```
 
-The service exposes an error string rather than stopping motion monitoring if the sound is unavailable.
+The service exposes an error string rather than stopping motion monitoring if the sound is unavailable. Playback is serialized: a new effect waits until the current `AVAudioPlayer` delegate callback reports completion.
 
 ### Task 4: Motion Observation And SwiftUI Surface
 
@@ -167,16 +176,16 @@ import CoreMotion
 
 @MainActor
 final class MotionMonitor: ObservableObject {
-    @Published var sensitivity = 0.5
+    @Published var sensitivity = 100.0
     @Published private(set) var triggerCount = 0
     @Published private(set) var latestIntensity = 0.0
     private let motionManager = CMMotionManager()
     private let soundPlayer = SoundPlayer()
-    private var detector = MotionTriggerDetector(sensitivity: 0.5)
+    private var detector = MotionTriggerDetector(sensitivity: 100.0)
 
     func start() {
         guard motionManager.isDeviceMotionAvailable else { return }
-        motionManager.deviceMotionUpdateInterval = 1.0 / 50.0
+        motionManager.deviceMotionUpdateInterval = 1.0 / 100.0
         motionManager.startDeviceMotionUpdates(to: .main) { [weak self] motion, _ in
             guard let self, let motion else { return }
             self.process(motion)

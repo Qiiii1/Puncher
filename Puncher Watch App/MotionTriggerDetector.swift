@@ -54,14 +54,18 @@ struct MotionTriggerDetector {
     private var lastTriggerTime: TimeInterval?
     private var consecutiveTriggerCount = 0
 
-    init(sensitivity: Double, cooldown: TimeInterval = 0.35, comboWindow: TimeInterval = 1.5) {
+    init(sensitivity: Double, cooldown: TimeInterval = 0.2, comboWindow: TimeInterval = 1.5) {
         self.sensitivity = sensitivity
         self.cooldown = cooldown
         self.comboWindow = comboWindow
     }
 
+    private var normalizedSensitivity: Double {
+        min(max(sensitivity, 0.0), 100.0) / 100.0
+    }
+
     private var thresholdScale: Double {
-        1.25 - min(max(sensitivity, 0.0), 1.0) * 0.5
+        1.25 - normalizedSensitivity * 0.5
     }
 
     private var accelerationThreshold: Double {

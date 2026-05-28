@@ -40,13 +40,13 @@ struct ContentView: View {
                     HStack {
                         Text("灵敏度")
                         Spacer()
-                        Text("\(Int(monitor.sensitivity * 100))")
+                        Text("\(Int(monitor.sensitivity))")
                             .monospacedDigit()
                     }
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
-                    Slider(value: $monitor.sensitivity, in: 0.0...1.0)
+                    Slider(value: $monitor.sensitivity, in: 0.0...100.0, step: 1.0)
                         .tint(.orange)
                 }
 

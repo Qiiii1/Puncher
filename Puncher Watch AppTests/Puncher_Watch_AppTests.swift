@@ -12,7 +12,7 @@ import Testing
 struct MotionTriggerDetectorTests {
 
     @Test func deliberateFastSwingTriggers() {
-        var detector = MotionTriggerDetector(sensitivity: 0.5)
+        var detector = MotionTriggerDetector(sensitivity: 50.0)
 
         let triggered = detector.shouldTrigger(
             for: MotionSample(
@@ -26,7 +26,7 @@ struct MotionTriggerDetectorTests {
     }
 
     @Test func minorMovementIsIgnored() {
-        var detector = MotionTriggerDetector(sensitivity: 0.5)
+        var detector = MotionTriggerDetector(sensitivity: 50.0)
 
         let triggered = detector.shouldTrigger(
             for: MotionSample(
@@ -40,7 +40,7 @@ struct MotionTriggerDetectorTests {
     }
 
     @Test func cooldownSuppressesRepeatTriggers() {
-        var detector = MotionTriggerDetector(sensitivity: 0.5)
+        var detector = MotionTriggerDetector(sensitivity: 50.0)
         let first = MotionSample(
             accelerationMagnitude: 1.2,
             rotationMagnitude: 3.0,
@@ -49,12 +49,12 @@ struct MotionTriggerDetectorTests {
         let repeated = MotionSample(
             accelerationMagnitude: 1.2,
             rotationMagnitude: 3.0,
-            timestamp: 1.2
+            timestamp: 1.1
         )
         let later = MotionSample(
             accelerationMagnitude: 1.2,
             rotationMagnitude: 3.0,
-            timestamp: 1.36
+            timestamp: 1.22
         )
         let acceptedFirst = detector.shouldTrigger(for: first)
         let rejectedRepeat = detector.shouldTrigger(for: repeated)
@@ -66,7 +66,7 @@ struct MotionTriggerDetectorTests {
     }
 
     @Test func thirdConsecutiveTriggerUsesEnhancedEffect() {
-        var detector = MotionTriggerDetector(sensitivity: 0.5)
+        var detector = MotionTriggerDetector(sensitivity: 50.0)
 
         let first = detector.trigger(for: strongSwing(at: 1.0))
         let second = detector.trigger(for: strongSwing(at: 1.4))
@@ -78,7 +78,7 @@ struct MotionTriggerDetectorTests {
     }
 
     @Test func comboWindowResetStartsBackAtBasic() {
-        var detector = MotionTriggerDetector(sensitivity: 0.5)
+        var detector = MotionTriggerDetector(sensitivity: 50.0)
 
         let first = detector.trigger(for: strongSwing(at: 1.0))
         let second = detector.trigger(for: strongSwing(at: 1.4))
@@ -96,12 +96,37 @@ struct MotionTriggerDetectorTests {
             timestamp: 1.0
         )
         var lowSensitivity = MotionTriggerDetector(sensitivity: 0.0)
-        var highSensitivity = MotionTriggerDetector(sensitivity: 1.0)
+        var highSensitivity = MotionTriggerDetector(sensitivity: 100.0)
         let lowTriggered = lowSensitivity.shouldTrigger(for: weakerSwing)
         let highTriggered = highSensitivity.shouldTrigger(for: weakerSwing)
 
         #expect(!lowTriggered)
         #expect(highTriggered)
+    }
+
+    @Test func sensitivityUsesZeroToOneHundredScale() {
+        let weakerSwing = MotionSample(
+            accelerationMagnitude: 0.9,
+            rotationMagnitude: 2.0,
+            timestamp: 1.0
+        )
+        var midpointSensitivity = MotionTriggerDetector(sensitivity: 50.0)
+        var maximumSensitivity = MotionTriggerDetector(sensitivity: 100.0)
+        let midpointTriggered = midpointSensitivity.shouldTrigger(for: weakerSwing)
+        let maximumTriggered = maximumSensitivity.shouldTrigger(for: weakerSwing)
+
+        #expect(!midpointTriggered)
+        #expect(maximumTriggered)
+    }
+
+    @Test func defaultCooldownAllowsFastFollowUpSwing() {
+        var detector = MotionTriggerDetector(sensitivity: 100.0)
+
+        let first = detector.trigger(for: strongSwing(at: 1.0))
+        let second = detector.trigger(for: strongSwing(at: 1.22))
+
+        #expect(first == .basic)
+        #expect(second == .basic)
     }
 
     @Test func vectorComponentsProduceMagnitudes() {
@@ -125,5 +150,24 @@ struct MotionTriggerDetectorTests {
             rotationMagnitude: 3.0,
             timestamp: timestamp
         )
+    }
+}
+
+struct SoundPlaybackQueueTests {
+
+    @Test func queuedEffectWaitsUntilCurrentPlaybackFinishes() {
+        var queue = SoundPlaybackQueue()
+
+        let first = queue.request(.basic)
+        let deferred = queue.request(.enhanced)
+        let next = queue.finishCurrent()
+        let final = queue.finishCurrent()
+
+        #expect(first == .basic)
+        #expect(deferred == nil)
+        #expect(next == .enhanced)
+        #expect(final == nil)
+        #expect(queue.currentEffect == nil)
+        #expect(queue.queuedEffectCount == 0)
     }
 }

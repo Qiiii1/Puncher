@@ -9,11 +9,15 @@ import AVFAudio
 import Foundation
 
 @MainActor
-final class SoundPlayer {
+final class SoundPlayer: NSObject, AVAudioPlayerDelegate {
     private var players: [MotionTriggerEffect: AVAudioPlayer] = [:]
+    private var playbackQueue = SoundPlaybackQueue()
+    private let playbackRate: Float = 1.15
     private(set) var errorMessage: String?
 
     init(bundle: Bundle = .main) {
+        super.init()
+        configureAudioSession()
         MotionTriggerEffect.allCases.forEach { effect in
             load(effect, from: bundle)
         }
@@ -26,12 +30,36 @@ final class SoundPlayer {
             return false
         }
 
+        guard let effectToStart = playbackQueue.request(effect) else {
+            return true
+        }
+
+        return start(effectToStart, with: player)
+    }
+
+    private func start(_ effect: MotionTriggerEffect, with player: AVAudioPlayer? = nil) -> Bool {
+        guard let player = player ?? players[effect] else {
+            appendError("找不到\(effect.title)音效。")
+            playbackQueue.cancelAll()
+            return false
+        }
+
         player.currentTime = 0
+        player.rate = playbackRate
         let didPlay = player.play()
         if !didPlay {
             errorMessage = "\(effect.title)音效播放失败。"
+            playbackQueue.cancelAll()
         }
         return didPlay
+    }
+
+    private func playNextQueuedEffect() {
+        guard let nextEffect = playbackQueue.finishCurrent() else {
+            return
+        }
+
+        _ = start(nextEffect)
     }
 
     private func load(_ effect: MotionTriggerEffect, from bundle: Bundle) {
@@ -48,6 +76,9 @@ final class SoundPlayer {
 
         do {
             let player = try AVAudioPlayer(contentsOf: soundURL)
+            player.delegate = self
+            player.enableRate = true
+            player.rate = playbackRate
             player.prepareToPlay()
             players[effect] = player
         } catch {
@@ -55,11 +86,37 @@ final class SoundPlayer {
         }
     }
 
+    private func configureAudioSession() {
+        let session = AVAudioSession.sharedInstance()
+        try? session.setCategory(.playback, mode: .default)
+        #if !os(watchOS)
+        try? session.setPreferredIOBufferDuration(0.005)
+        #endif
+        try? session.setActive(true)
+    }
+
     private func appendError(_ message: String) {
         if let errorMessage {
             self.errorMessage = "\(errorMessage)\n\(message)"
         } else {
             errorMessage = message
+        }
+    }
+
+    nonisolated func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        Task { @MainActor [weak self] in
+            self?.playNextQueuedEffect()
+        }
+    }
+
+    nonisolated func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
+        Task { @MainActor [weak self] in
+            if let error {
+                self?.appendError("音效播放中断：\(error.localizedDescription)")
+            } else {
+                self?.appendError("音效播放中断。")
+            }
+            self?.playNextQueuedEffect()
         }
     }
 }
